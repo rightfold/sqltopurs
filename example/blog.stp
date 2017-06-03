@@ -1,0 +1,16 @@
+module Blog.Database;
+
+import Data.UUID (UUID);
+
+type 2950 <-> UUID;
+type 25 <-> String;
+
+query getPosts =
+  SELECT id, title
+  FROM posts
+  WHERE published IS NOT NULL
+  ORDER BY published DESC;
+
+query newPost =
+  INSERT INTO posts (id, title)
+  VALUES ($1, $2);
