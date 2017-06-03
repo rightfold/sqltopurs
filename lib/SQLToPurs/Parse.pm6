@@ -18,7 +18,7 @@ grammar Grammar {
   }
 
   rule stmt:sym<type> {
-    'type' <oid> '<->' <ident> ';'
+    'type' <oid> '<->' <verbatim> ';'
   }
 
   rule stmt:sym<query> {
@@ -40,7 +40,7 @@ grammar Grammar {
 
 class Actions {
   method TOP($/) {
-    make Module.new(stmts => $<stmt>.map(*.made));
+    make $<stmt>.map(*.made);
   }
 
   method stmt:sym<module>($/) {
@@ -52,11 +52,11 @@ class Actions {
   }
 
   method stmt:sym<type>($/) {
-    make TypeStmt.new(sql => +$<oid>, purs => ~$<ident>);
+    make TypeStmt.new(sql => +$<oid>, purs => ~$<verbatim>);
   }
 
   method stmt:sym<query>($/) {
-    make QueryStmt.new(query => ~$<verbatim>);
+    make QueryStmt.new(name => ~$<ident>, query => ~$<verbatim>);
   }
 }
 

@@ -17,9 +17,6 @@ class TypeStmt is Stmt is export {
 }
 
 class QueryStmt is Stmt is export {
+  has Str $.name;
   has Str $.query;
-}
-
-class Module is export {
-  has Stmt @.stmts;
 }
