@@ -2,8 +2,8 @@
 use Database::PostgreSQL::LibPQ;
 use SQLToPurs::Parse;
 
-multi MAIN(IO(Cool) $in = '/dev/stdin', IO(Cool) :$out = '/dev/stdout') {
-  my $conn = Database::PostgreSQL::LibPQ::Connection.new('');
+multi MAIN(IO(Cool) $in = '/dev/stdin', IO(Cool) :$out = '/dev/stdout', Str(Cool) :$conn-str = '') {
+  my $conn = Database::PostgreSQL::LibPQ::Connection.new($conn-str);
   $conn.prepare('', 'SELECT $1 || $2');
   my ($param-types, $field-types) = $conn.describe-prepared('');
   $param-types.say;
