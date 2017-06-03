@@ -1,6 +1,12 @@
 #!/usr/bin/env perl6
+use Database::PostgreSQL::LibPQ;
 use SQLToPurs::Parse;
 
 multi MAIN(IO(Cool) $in = '/dev/stdin', IO(Cool) :$out = '/dev/stdout') {
+  my $conn = Database::PostgreSQL::LibPQ::Connection.new('');
+  $conn.prepare('', 'SELECT $1 || $2');
+  my ($param-types, $field-types) = $conn.describe-prepared('');
+  $param-types.say;
+  $field-types.say;
   parse($in.slurp).perl.say;
 }
