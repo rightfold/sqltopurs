@@ -32,8 +32,8 @@ class Connection {
   method describe-prepared(Connection:D: Str:D $name) {
     my $result = PQdescribePrepared(self, $name);
     $result.check(self);
-    my @parameters = (^PQnparams($result)).map({PQparamtype($result, $_)});
-    my @fields = (^PQnfields($result)).map({PQftype($result, $_)});
+    my Int:D @parameters = (^PQnparams($result)).map({PQparamtype($result, $_)});
+    my Int:D @fields = (^PQnfields($result)).map({PQftype($result, $_)});
     (@parameters, @fields);
   }
 }
