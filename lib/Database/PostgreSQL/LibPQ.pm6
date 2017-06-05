@@ -17,6 +17,11 @@ sub PQerrorMessage(Connection --> Str) is native(LIBPQ) {*}
 sub PQresultStatus(Result --> int32) is native(LIBPQ) {*}
 sub PQresultErrorMessage(Result --> Str) is native(LIBPQ) {*}
 
+our class Description {
+  has Int @.parameters;
+  has Int @.fields;
+}
+
 class Connection {
   method new(Str:D $conn-str --> Connection:D) {
     my $handle = PQconnectdb($conn-str);
@@ -29,12 +34,12 @@ class Connection {
     $result.check(self);
   }
 
-  method describe-prepared(Connection:D: Str:D $name) {
+  method describe-prepared(Connection:D: Str:D $name --> Description:D) {
     my $result = PQdescribePrepared(self, $name);
     $result.check(self);
-    my Int:D @parameters = (^PQnparams($result)).map({PQparamtype($result, $_)});
-    my Int:D @fields = (^PQnfields($result)).map({PQftype($result, $_)});
-    (@parameters, @fields);
+    my @parameters = ^PQnparams($result) .map: {PQparamtype $result, $_};
+    my @fields = ^PQnfields($result) .map: {PQftype $result, $_};
+    Description.new(:@parameters, :@fields);
   }
 }
 

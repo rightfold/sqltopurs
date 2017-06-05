@@ -48,9 +48,9 @@ multi method stmt(QueryStmt $stmt) {
   }
 
   $!conn.prepare('', $stmt.query);
-  my ($in-types, $out-types) = $!conn.describe-prepared('');
-  my $in-type = row-type($in-types);
-  my $out-type = row-type($out-types);
+  my $description = $!conn.describe-prepared('');
+  my $in-type = row-type($description.parameters);
+  my $out-type = row-type($description.fields);
   $!out.print("{$stmt.name}\n");
   $!out.print("  :: ∀ stp_eff\n");
   $!out.print("   . STP.PG.Connection\n");
