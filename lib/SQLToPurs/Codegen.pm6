@@ -43,6 +43,10 @@ multi method stmt(QueryStmt $stmt) {
     "STP.Aff.Aff (postgreSQL :: STP.PG.POSTGRESQL | $eff)";
   }
 
+  sub escape(Str:D $text --> Str:D) {
+    $text.subst(/"\\"/, "\\\\", :g).subst(/'"'/, "\\\"", :g);
+  }
+
   $!conn.prepare('', $stmt.query);
   my ($in-types, $out-types) = $!conn.describe-prepared('');
   my $in-type = row-type($in-types);
@@ -53,6 +57,6 @@ multi method stmt(QueryStmt $stmt) {
   $!out.print("  -> ($in-type)\n");
   $!out.print("  -> {kleisli 'stp_eff'} (Array ($out-type))\n");
   $!out.print("{$stmt.name} stp_conn = STP.PG.query stp_conn (STP.PG.Query ");
-  $!out.print('"""' ~ $stmt.query ~ '"""');
+  $!out.print('"""' ~ escape($stmt.query) ~ '"""');
   $!out.print(")\n");
 }
