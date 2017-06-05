@@ -31,8 +31,12 @@ multi method stmt(TypeStmt $stmt) {
 }
 
 multi method stmt(QueryStmt $stmt) {
+  sub type(Int:D $sql-type --> Str:D) {
+    %!types{$sql-type} // fail "Provide a mapping for type with oid $sql-type";
+  }
+
   sub row-type(Int:D @sql-types --> Str:D) {
-    'STP.PG.Row' ~ @sql-types.elems ~ @sql-types.map({" ({%!types{$_}})"}).join;
+    'STP.PG.Row' ~ @sql-types.elems ~ @sql-types.map({" ({type $_})"}).join;
   }
 
   sub kleisli(Str:D $eff --> Str:D) {
