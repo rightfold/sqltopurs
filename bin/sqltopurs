@@ -3,9 +3,35 @@ use Database::PostgreSQL::LibPQ;
 use SQLToPurs::Codegen;
 use SQLToPurs::Parse;
 
+my Str %default-types{Int} =
+  16 => 'Boolean',
+  17 => 'ByteString',
+  23 => 'Int',
+  25 => 'String',
+  114 => 'Json',
+  701 => 'Number',
+  1082 => 'Date',
+  1083 => 'Time',
+  1184 => 'Instant',
+  1186 => 'Milliseconds',
+  2950 => 'UUID',
+
+  1000 => 'Array Boolean',
+  1001 => 'Array ByteString',
+  1007 => 'Array Int',
+  1009 => 'Array String',
+  199 => 'Array Json',
+  1022 => 'Array Number',
+  1182 => 'Array Date',
+  1183 => 'Array Time',
+  1185 => 'Array Instant',
+  1187 => 'Array Milliseconds',
+  2951 => 'Array UUID',
+;
+
 multi MAIN(IO(Cool) $in = '/dev/stdin', IO(Cool) :$out = '/dev/stdout', Str(Cool) :$conn-str = '') {
   my $conn = Database::PostgreSQL::LibPQ::Connection.new($conn-str);
-  my $codegen = SQLToPurs::Codegen.new($conn, $out.open(:w));
+  my $codegen = SQLToPurs::Codegen.new($conn, $out.open(:w), %default-types);
   my @stmts = parse($in.slurp);
   $codegen.stmt($_) for @stmts;
 }

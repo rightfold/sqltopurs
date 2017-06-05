@@ -7,11 +7,11 @@ has Database::PostgreSQL::LibPQ::Connection $!conn;
 has IO::Handle $!out;
 has Str %!types{Int};
 
-method new(Database::PostgreSQL::LibPQ::Connection:D $conn, IO::Handle:D $out --> SQLToPurs::Codegen:D) {
-  self.bless(:$conn, :$out);
+method new($conn, $out, %types) {
+  self.bless(:$conn, :$out, :%types);
 }
 
-submethod BUILD(:$!conn, :$!out) {
+submethod BUILD(:$!conn, :$!out, :%!types) {
 }
 
 proto method stmt(SQLToPurs::Codegen:D: Stmt:D $stmt) {*}

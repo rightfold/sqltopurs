@@ -3,7 +3,6 @@ module Blog.Database;
 import Data.UUID (UUID);
 
 type 2950 <-> UUID;
-type 25 <-> String;
 
 query getPosts =
   SELECT id, title
