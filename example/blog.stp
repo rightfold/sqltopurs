@@ -1,15 +1,18 @@
 module Blog.Database;
 
-import Data.UUID (UUID);
+import Prim (String);
 
-type 2950 <-> UUID;
+type 2950 <-> String;
 
+@deriveIn(Eq, Ord, Show, Generic)
+@deriveOut(Eq, Ord, Show, Generic)
 query getPosts =
   SELECT id, title
   FROM posts
   WHERE published IS NOT NULL
   ORDER BY published DESC;
 
+@deriveIn(Eq, Ord, Show, Generic)
 query newPost =
   INSERT INTO posts (id, title)
   VALUES ($1, $2);

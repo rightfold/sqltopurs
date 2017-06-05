@@ -17,6 +17,8 @@ class TypeStmt is Stmt is export {
 }
 
 class QueryStmt is Stmt is export {
+  has Str @.derive-in;
+  has Str @.derive-out;
   has Str $.name;
   has Str $.query;
 }

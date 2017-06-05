@@ -8,18 +8,24 @@ my class Result is repr('CPointer') {...}
 sub PQconnectdb(Str --> Connection) is native(LIBPQ) {*}
 sub PQprepare(Connection, Str, Str, int32, Pointer[void] --> Result) is native(LIBPQ) {*}
 sub PQdescribePrepared(Connection, Str --> Result) is native(LIBPQ) {*}
-sub PQnparams(Connection --> int32) is native(LIBPQ) {*}
-sub PQparamtype(Connection, int32 --> uint32) is native(LIBPQ) {*}
-sub PQnfields(Connection --> int32) is native(LIBPQ) {*}
-sub PQftype(Connection, int32 --> uint32) is native(LIBPQ) {*}
+sub PQnparams(Result --> int32) is native(LIBPQ) {*}
+sub PQparamtype(Result, int32 --> uint32) is native(LIBPQ) {*}
+sub PQnfields(Result --> int32) is native(LIBPQ) {*}
+sub PQftype(Result, int32 --> uint32) is native(LIBPQ) {*}
+sub PQfname(Result, int32 --> Str) is native(LIBPQ) {*}
 sub PQstatus(Connection --> int32) is native(LIBPQ) {*}
 sub PQerrorMessage(Connection --> Str) is native(LIBPQ) {*}
 sub PQresultStatus(Result --> int32) is native(LIBPQ) {*}
 sub PQresultErrorMessage(Result --> Str) is native(LIBPQ) {*}
 
+our class Field {
+  has Int $.type;
+  has Str $.name;
+}
+
 our class Description {
   has Int @.parameters;
-  has Int @.fields;
+  has Field @.fields;
 }
 
 class Connection {
@@ -38,7 +44,12 @@ class Connection {
     my $result = PQdescribePrepared(self, $name);
     $result.check(self);
     my @parameters = ^PQnparams($result) .map: {PQparamtype $result, $_};
-    my @fields = ^PQnfields($result) .map: {PQftype $result, $_};
+    my @fields = ^PQnfields($result) .map: {
+      Field.new(
+        type => PQftype($result, $_),
+        name => PQfname($result, $_),
+      );
+    };
     Description.new(:@parameters, :@fields);
   }
 }

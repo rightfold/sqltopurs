@@ -22,7 +22,9 @@ grammar Grammar {
   }
 
   rule stmt:sym<query> {
-    'query' <ident> '=' <verbatim> ';'
+    ['@' 'deriveIn' '(' [$<derive-in>=<ident>]* %% ',' ')']?
+    ['@' 'deriveOut' '(' [$<derive-out>=<ident>]* %% ',' ')']?
+    'query' $<name>=<ident> '=' <verbatim> ';'
   }
 
   token ident {
@@ -56,7 +58,12 @@ class Actions {
   }
 
   method stmt:sym<query>($/) {
-    make QueryStmt.new(name => ~$<ident>, query => ~$<verbatim>);
+    make QueryStmt.new(
+      derive-in => ($<derive-in> // []).map(*.Str),
+      derive-out => ($<derive-out> // []).map(*.Str),
+      name => ~$<name>,
+      query => ~$<verbatim>,
+    );
   }
 }
 
