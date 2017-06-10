@@ -9,6 +9,7 @@ and invokes the query. Usage is simple; just invoke `sqltopurs` with the source
 and target files before you run `pulp build`.
 
 ```bash
+$ npm install -g sqltopurs-npm
 $ sqltopurs example/blog.stp src/Blog/Database.purs
 $ pulp build
 ```
