@@ -1,0 +1,14 @@
+{
+  "name": "sqltopurs-npm",
+  "description": "A functor from SQL to PureScript",
+  "keywords": ["purescript", "postgresql", "type-provider"],
+  "license": "BSD-3-Clause",
+  "version": "2.1.0",
+  "bin": {
+    "sqltopurs": "bin/sqltopurs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rightfold/sqltopurs.git"
+  }
+}
