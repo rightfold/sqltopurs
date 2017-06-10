@@ -1,4 +1,5 @@
 #!/usr/bin/env perl6
+use lib "{$?FILE.IO.dirname}/../lib";
 use Database::PostgreSQL::LibPQ;
 use SQLToPurs::Codegen;
 use SQLToPurs::Parse;
